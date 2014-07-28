@@ -22,23 +22,24 @@ include_recipe "apache2::service"
 
 application_name = params[:name]
 
-Chef::Log.debug(node.inspect)
+Chef::Log.info("NODE VARS: #{node.inspect}")
+Chef::Log.info("APP NAME: #{application_name}")
 
-directory "#{node[:apache][:dir]}/sites-available/#{application_name}.conf.d" do
+directory "etc/apache2/sites-available/#{application_name}.conf.d" do
   action :create
   mode 0644
   owner 'root'
   group 'root'
 end
 
-template "#{node[:apache][:dir]}/sites-available/#{application_name}.conf.d/local-wwwredirect.conf" do
+template "/etc/apache2/sites-available/#{application_name}.conf.d/local-wwwredirect.conf" do
   Chef::Log.debug("Generating www redirect config file for #{application_name.inspect}")
   source 'local-wwwredirect.conf.erb'
   owner 'root'
   group 'root'
   mode 0644
 
-  if ::File.exists?("#{node[:apache][:dir]}/sites-enabled/#{application_name}.conf") 
+  if ::File.exists?("/etc/apache2/sites-enabled/#{application_name}.conf") 
     notified :reload, "service[apache2]", :delayed
   end
 end
