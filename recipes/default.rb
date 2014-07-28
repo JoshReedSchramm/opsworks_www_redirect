@@ -20,6 +20,10 @@ include_recipe "packages"
 include_recipe "gem_support"
 include_recipe "apache2::service"
 
+application_name = params[:name]
+
+Chef::Log.debug(node.inspect)
+
 directory "#{node[:apache][:dir]}/sites-available/#{application_name}.conf.d" do
   action :create
   mode 0644
