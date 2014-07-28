@@ -16,7 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-#include_recipe "passenger_apache2"
+
+application_name = params[:name]
 
 directory "#{node[:apache][:dir]}/sites-available/#{application_name}.conf.d" do
   action :create
@@ -32,7 +33,7 @@ template "#{node[:apache][:dir]}/sites-available/#{application_name}.conf.d/loca
   group 'root'
   mode 0644
 
-  # if ::File.exists?("#{node[:apache][:dir]}/sites-enabled/#{application_name}.conf") 
-  #   notified :reload, "service[apache2]", :delayed
-  # end
+  if ::File.exists?("#{node[:apache][:dir]}/sites-enabled/#{application_name}.conf") 
+    notified :reload, "service[apache2]", :delayed
+  end
 end
